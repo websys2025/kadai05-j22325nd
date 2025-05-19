@@ -10,14 +10,15 @@
     <form name="apiform">
         <p>
             何かのフォーム：<input type="text" name="form_data">
-            <button type="button" id="btn1" onclick="some_api(this.form)">実行</button>
+            <button type="button" id="btn1" onclick="some_api()">実行</button>
         </p>
     </form>
 
     <div id="result"></div>
     <script>
-        async function some_api(myForm) {
-            const name = myForm.form_data.value.trim();
+        async function some_api() {
+            const form = document.forms["apiform"]; // ← ここでフォームを正しく取得
+            const name = form.form_data.value.trim();
             const resultArea = document.getElementById("result");
 
             if (!name) {
@@ -37,16 +38,17 @@
         `;
                 } else {
                     resultArea.innerHTML = `
-          入力された名前「${data.name}」に対する年齢データは見つかりませんでした。
+          入力された名前「${name}」に対する年齢データは見つかりませんでした。
         `;
                 }
             } catch (error) {
                 resultArea.innerHTML = "エラーが発生しました。インターネット接続を確認してください。";
             }
 
-            myForm.reset();
+            form.reset();
         }
     </script>
+
 
 
 </body>
