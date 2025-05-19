@@ -17,20 +17,37 @@
     <div id="result"></div>
     <script>
         async function some_api(myForm) {
-            const name = myForm.form_data.value;
+            const name = myForm.form_data.value.trim();
+            const resultArea = document.getElementById("result");
+
+            if (!name) {
+                resultArea.innerHTML = "名前を入力してください。";
+                return;
+            }
+
             try {
-                const response = await fetch(`https://api.agify.io/?name=${name}`);
+                const response = await fetch(`https://api.agify.io/?name=${encodeURIComponent(name)}`);
                 const data = await response.json();
 
-                document.getElementById("result").innerHTML =
-                    `名前: ${data.name}、予測年齢: ${data.age}歳<br />`;
+                if (data.age !== null && data.age !== undefined) {
+                    resultArea.innerHTML = `
+          <strong>予測された名前:</strong> ${data.name}<br />
+          <strong>予測年齢:</strong> ${data.age} 歳<br />
+          <strong>データ件数:</strong> ${data.count}
+        `;
+                } else {
+                    resultArea.innerHTML = `
+          入力された名前「${data.name}」に対する年齢データは見つかりませんでした。
+        `;
+                }
             } catch (error) {
-                document.getElementById("result").innerHTML =
-                    "エラーが発生しました。";
+                resultArea.innerHTML = "エラーが発生しました。インターネット接続を確認してください。";
             }
-            document.apiform.reset();
+
+            myForm.reset();
         }
     </script>
+
 
 </body>
 
